@@ -1,5 +1,7 @@
 package br.com.lavanderia.model.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,9 +52,9 @@ public class Usuario {
 
     @NotNull
     @Column (name = "created_at")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
     @Column(name = "updated_at")
-    private String updatedAt;   
+    private LocalDateTime updatedAt;   
 }

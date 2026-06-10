@@ -56,14 +56,12 @@ public class Cliente {
     private String cidade;
 
     @NotBlank
-    @Column(name = "estado", columnDefinition = "CHAR(2)")
+    @Column(name = "estado", length = 2)
     private String estado;
     
-    @NotBlank
     @Column(name = "complemento")
     private String complemento;
 
-    @NotBlank
     @Column(name = "observacao")
     private String observacao;
 
