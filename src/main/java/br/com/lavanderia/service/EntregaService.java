@@ -9,9 +9,11 @@ import br.com.lavanderia.dto.entrega.EntregaRequestDTO;
 import br.com.lavanderia.dto.entrega.EntregaResponseDTO;
 import br.com.lavanderia.model.entity.Cliente;
 import br.com.lavanderia.model.entity.Entrega;
+import br.com.lavanderia.model.entity.HistoricoEntrega;
 import br.com.lavanderia.model.entity.Usuario;
 import br.com.lavanderia.repository.ClienteRepository;
 import br.com.lavanderia.repository.EntregaRepository;
+import br.com.lavanderia.repository.HistoricoEntregaRepository;
 import br.com.lavanderia.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ public class EntregaService {
     private final UsuarioRepository usuarioRepository;
     private final EntregaRepository entregaRepository;
     private final ClienteRepository clienteRepository;
+    private final HistoricoEntregaRepository historicoEntregaRepository;
 
     public EntregaResponseDTO criar(EntregaRequestDTO dto) {
 
@@ -56,6 +59,13 @@ public class EntregaService {
         entrega.setUpdatedAt(LocalDateTime.now());
 
         Entrega salva = entregaRepository.save(entrega);
+
+        registrarHistorico(
+        salva,
+        criadoPor,
+        "CRIACAO",
+        "Entrega criada"
+        );
 
         return converterParaResponseDTO(salva);
     }
@@ -110,6 +120,13 @@ public class EntregaService {
 
         Entrega atualizada = entregaRepository.save(entrega);
 
+        registrarHistorico(
+        atualizada,
+        criadoPor,
+        "ATUALIZACAO",
+        "Entrega atualizada"
+        );
+
         return converterParaResponseDTO(atualizada);
     }
 
@@ -119,6 +136,23 @@ public class EntregaService {
                 .orElseThrow(() -> new RuntimeException("Entrega não encontrada."));
 
         entregaRepository.delete(entrega);
+    }
+
+    private void registrarHistorico(
+        Entrega entrega,
+        Usuario usuario,
+        String acao,
+        String descricao) {
+
+        HistoricoEntrega historico = new HistoricoEntrega();
+
+        historico.setEntrega(entrega);
+        historico.setUsuario(usuario);
+        historico.setAcao(acao);
+        historico.setDescricao(descricao);
+        historico.setCreatedAt(LocalDateTime.now());
+
+        historicoEntregaRepository.save(historico);
     }
 
     private EntregaResponseDTO converterParaResponseDTO(Entrega entrega) {
