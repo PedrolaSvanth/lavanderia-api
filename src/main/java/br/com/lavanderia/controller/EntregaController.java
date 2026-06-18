@@ -1,5 +1,6 @@
 package br.com.lavanderia.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lavanderia.dto.entrega.AgendaEntregaDTO;
 import br.com.lavanderia.dto.entrega.EntregaRequestDTO;
 import br.com.lavanderia.dto.entrega.EntregaResponseDTO;
 import br.com.lavanderia.service.EntregaService;
@@ -35,6 +37,15 @@ public class EntregaController {
         EntregaResponseDTO entrega = entregaService.criar(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(entrega);
+    }
+
+    @GetMapping("/agenda/{data}")
+    public ResponseEntity<List<AgendaEntregaDTO>> buscarAgenda(
+            @PathVariable LocalDate data) {
+
+        return ResponseEntity.ok(
+            entregaService.buscarAgenda(data)
+        );
     }
 
     @GetMapping

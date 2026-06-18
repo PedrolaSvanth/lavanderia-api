@@ -1,10 +1,12 @@
 package br.com.lavanderia.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import br.com.lavanderia.dto.entrega.AgendaEntregaDTO;
 import br.com.lavanderia.dto.entrega.EntregaRequestDTO;
 import br.com.lavanderia.dto.entrega.EntregaResponseDTO;
 import br.com.lavanderia.model.entity.Cliente;
@@ -76,6 +78,42 @@ public class EntregaService {
                 .stream()
                 .map(this::converterParaResponseDTO)
                 .toList();
+    }
+
+    public List<AgendaEntregaDTO> buscarAgenda(LocalDate data) {
+
+    return entregaRepository
+            .findByDataAgendada(data)
+            .stream()
+            .map(this::toAgendaDTO)
+            .toList();
+    }
+
+    private AgendaEntregaDTO toAgendaDTO(Entrega entrega) {
+
+        Cliente cliente = entrega.getCliente();
+
+        String enderecoCompleto =
+                cliente.getLogradouro() + ", " +
+                cliente.getNumero() + " - " +
+                cliente.getBairro() + " - " +
+                cliente.getCidade() + "/" +
+                cliente.getEstado();
+
+        return new AgendaEntregaDTO(
+                entrega.getId(),
+                cliente.getNome(),
+                cliente.getTelefone(),
+                enderecoCompleto,
+                entrega.getMotorista().getNome(), // confirmar campo na entidade Usuario
+                entrega.getNumeroOrcamento(),
+                entrega.getDescricao(),
+                entrega.getObservacaoMotorista(),
+                entrega.getPago(),
+                entrega.getStatus(),
+                entrega.getDataAgendada(),
+                entrega.getHoraAgendada()
+        );
     }
 
     public EntregaResponseDTO buscarPorId(Long id) {

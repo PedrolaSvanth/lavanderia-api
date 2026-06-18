@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import br.com.lavanderia.dto.login.LoginRequestDTO;
+import br.com.lavanderia.dto.login.LoginResponseDTO;
 import br.com.lavanderia.dto.usuario.UsuarioRequestDTO;
 import br.com.lavanderia.dto.usuario.UsuarioResponseDTO;
 import br.com.lavanderia.model.entity.Usuario;
@@ -50,6 +52,29 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         return converterParaResponseDTO(usuario);
+    }
+
+    public LoginResponseDTO login(LoginRequestDTO dto) {
+
+        Usuario usuario = usuarioRepository
+            .findByEmail(dto.email())
+            .orElseThrow(() ->
+                new RuntimeException("Usuário ou senha inválidos.")
+        );
+
+        if (!usuario.getSenhaHash().equals(dto.senha())) {
+
+        throw new RuntimeException(
+            "Usuário ou senha inválidos."
+            );
+        }
+
+        return new LoginResponseDTO(
+            usuario.getId(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            usuario.getCargo()
+        );
     }
 
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {

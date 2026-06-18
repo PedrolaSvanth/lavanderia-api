@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lavanderia.dto.login.LoginRequestDTO;
+import br.com.lavanderia.dto.login.LoginResponseDTO;
 import br.com.lavanderia.dto.usuario.UsuarioRequestDTO;
 import br.com.lavanderia.dto.usuario.UsuarioResponseDTO;
 import br.com.lavanderia.service.UsuarioService;
@@ -48,6 +50,15 @@ public class UsuarioController {
             @PathVariable Long id) {
 
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(
+        @RequestBody LoginRequestDTO dto) {
+
+        return ResponseEntity.ok(
+            usuarioService.login(dto)
+        );
     }
 
     @PutMapping("/{id}")
